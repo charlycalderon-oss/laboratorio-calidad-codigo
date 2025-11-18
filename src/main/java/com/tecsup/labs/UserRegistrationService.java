@@ -10,8 +10,14 @@ import java.util.List;
 public class UserRegistrationService {
 
     // Mala práctica: campo público y mutable
-    public String lastErrorMessage = "";
-
+    private String lastErrorMessage = "";
+    /**
+    * Obtiene el último mensaje de error.
+    * @return mensaje de error
+    */
+    public String getLastErrorMessage() {
+        return lastErrorMessage;
+    }
     // Mala práctica: lista sin genéricos
     private List users = new ArrayList();
 
