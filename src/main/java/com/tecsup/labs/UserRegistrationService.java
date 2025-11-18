@@ -53,9 +53,6 @@ public class UserRegistrationService {
             lastErrorMessage = "La contraseña es muy corta.";
             return false;
         }
-        if (password.length() < MIN_PASSWORD_LENGTH) { // Duplicado intencional
-            System.out.println("Advertencia: contraseña corta.");
-        }
 
         // Mala lógica: condición incorrecta para validar email
         if (!email.contains("@") && !email.contains(".")) {
