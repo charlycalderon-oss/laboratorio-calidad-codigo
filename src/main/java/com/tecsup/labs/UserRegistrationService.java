@@ -55,9 +55,9 @@ public class UserRegistrationService {
         }
 
         // Mala lógica: condición incorrecta para validar email
-        if (!email.contains("@") && !email.contains(".")) {
+        if (!email.contains("@") || !email.contains(".")) {
             lastErrorMessage = "El correo electrónico no parece válido.";
-            // En realidad, debería ser una condición más estricta
+            return false; // Agregar return para detener la ejecución
         }
 
         // Manejo de excepciones deficiente
