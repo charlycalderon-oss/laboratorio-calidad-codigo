@@ -33,8 +33,8 @@ public class UserRegistrationService {
      */
     public boolean registerUser(String username, String password, String email) {
         // Posible NullPointerException: no se valida si username es null
-        if (username.trim().isEmpty()) {
-            lastErrorMessage = "El nombre de usuario está vacío.";
+        if (username == null || username.trim().isEmpty()) {
+            lastErrorMessage = "El nombre de usuario está vacío o es nulo.";
             return false;
         }
 
