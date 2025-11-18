@@ -19,7 +19,7 @@ public class UserRegistrationService {
         return lastErrorMessage;
     }
     // Mala práctica: lista sin genéricos
-    private List users = new ArrayList();
+    private final List<String> users = new ArrayList<>();
 
     // Mala práctica: número mágico
     private static final int MIN_PASSWORD_LENGTH = 8;
