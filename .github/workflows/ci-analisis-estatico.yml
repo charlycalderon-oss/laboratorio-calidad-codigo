@@ -1,0 +1,31 @@
+name: CI - Analisis Estatico Java
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Compilar y ejecutar análisis estático
+        run: mvn -B clean verify
+
+      - name: Upload Checkstyle Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: checkstyle-report
+          path: target/checkstyle-result.xml
