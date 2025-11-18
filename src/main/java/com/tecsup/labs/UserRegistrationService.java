@@ -9,28 +9,33 @@ import java.util.List;
  */
 public class UserRegistrationService {
 
-    // Mala práctica: campo público y mutable
+    // Mala práctica: campo público y mutable (Corregido: ahora es privado)
     private String lastErrorMessage = "";
-    /**
-    * Obtiene el último mensaje de error.
-    * @return mensaje de error
-    */
-    public String getLastErrorMessage() {
-        return lastErrorMessage;
-    }
-    // Mala práctica: lista sin genéricos
-    private final List<String> users = new ArrayList<>();
+    
+    // Mala práctica: lista sin genéricos (Corregido: ahora usa String y es final)
+    // Se recomienda usar un objeto User en lugar de String para mejor diseño.
+    private final List<String> users = new ArrayList<>(); 
 
-    // Mala práctica: número mágico
+    // Mala práctica: número mágico (Corregido: ya es una constante)
     private static final int MIN_PASSWORD_LENGTH = 8;
 
-    // Constructor con lógica innecesaria
+    /**
+     * Constructor del servicio de registro de usuarios.
+     * Problema Corregido: Se eliminó la lógica innecesaria (if (users == null))
+     */
     public UserRegistrationService() {
-        // Comentario engañoso: aquí no se valida nada aún
+        // Se elimina el código innecesario aquí.
+        // Si el objeto se inicializa con 'final List<String> users = new ArrayList<>();',
+        // la condición 'if (users == null)' nunca se cumplirá.
         System.out.println("Constructor llamado");
-        if (users == null) { // Esta condición nunca se cumple
-            users = new ArrayList();
-        }
+    }
+
+    /**
+     * Obtiene el último mensaje de error.
+     * @return mensaje de error
+     */
+    public String getLastErrorMessage() {
+        return lastErrorMessage;
     }
 
     /**
@@ -38,62 +43,78 @@ public class UserRegistrationService {
      * Retorna true si se registra, false en caso contrario.
      */
     public boolean registerUser(String username, String password, String email) {
-        // Posible NullPointerException: no se valida si username es null
+        // Validación de nulidad y vacío
         if (username == null || username.trim().isEmpty()) {
             lastErrorMessage = "El nombre de usuario está vacío o es nulo.";
             return false;
         }
 
-        // Código duplicado: validación de longitud escrita dos veces
+        // Validación de contraseña
         if (password == null) {
-            lastErrorMessage = "La contraseña es null.";
+            lastErrorMessage = "La contraseña es nula.";
             return false;
         }
         if (password.length() < MIN_PASSWORD_LENGTH) {
-            lastErrorMessage = "La contraseña es muy corta.";
+            lastErrorMessage = "La contraseña es muy corta (Mínimo " + MIN_PASSWORD_LENGTH + " caracteres).";
             return false;
         }
 
-        // Mala lógica: condición incorrecta para validar email
+        // Validación de email (Mala lógica - Se mantiene simple, pero se corrige el return)
         if (!email.contains("@") || !email.contains(".")) {
             lastErrorMessage = "El correo electrónico no parece válido.";
-            return false; // Agregar return para detener la ejecución
+            return false;
         }
 
-        // Manejo de excepciones deficiente
+        // Manejo de excepciones deficiente (¡Corregido!)
         try {
             // Simulación de acceso a base de datos
-            saveUser(username, password, email);
+            saveUser(username); // Modificado para solo recibir datos necesarios.
+            
+        } catch (IllegalArgumentException e) {
+            // Capturar excepción específica y loguear el mensaje (buena práctica)
+            System.err.println("Error al guardar usuario: " + e.getMessage());
+            lastErrorMessage = e.getMessage(); // Usamos el mensaje de la excepción específica
+            return false;
+
         } catch (Exception e) {
-            // Mala práctica: capturar Exception general y no registrar nada
+            // Catch para otros errores inesperados (siempre es mejor capturar excepciones específicas)
+            System.err.println("Error desconocido al guardar: " + e.getMessage());
             lastErrorMessage = "Error desconocido al guardar el usuario.";
             return false;
         }
 
-        // Usuarios duplicados no se validan
+        // Usuarios duplicados no se validan (Pendiente: requeriría un bucle/mapa de validación)
         System.out.println("Usuario registrado: " + username);
         return true;
     }
 
-    private void saveUser(String username, String password, String email) throws Exception {
+    /**
+     * Simula la persistencia del usuario.
+     * @param username El nombre de usuario a guardar.
+     * @throws IllegalArgumentException Si el nombre de usuario no es permitido.
+     */
+    private void saveUser(String username) throws IllegalArgumentException {
         // Simula guardar el usuario en una lista
-        users.add(username); // Mala práctica: solo se guarda el nombre
+        // Nota: Idealmente se guardaría un objeto User, no solo el String.
+        users.add(username); 
+        
         if (username.equals("error")) {
-            // Excepción artificial para que las herramientas lo detecten
-            throw new Exception("Nombre de usuario no permitido.");
+            // Excepción más específica (IllegalArgumentException en lugar de Exception)
+            throw new IllegalArgumentException("Nombre de usuario no permitido.");
         }
     }
 
-    // Método con nombre poco claro y sin comentarios
-    public int x(String s) {
+    /**
+     * Devuelve la longitud de la cadena de entrada.
+     * @param s La cadena a procesar.
+     * @return La longitud de la cadena, o -1 si es nula.
+     */
+    public int getStringLength(String s) { // Nombre corregido
         if (s == null) {
             return -1;
         }
-        // Uso ineficiente de String
-        String result = "";
-        for (int i = 0; i < s.length(); i++) {
-            result = result + s.charAt(i);
-        }
-        return result.length();
+        // Uso ineficiente de String (¡Corregido!)
+        // La concatenación en bucle es ineficiente; el método .length() es la solución.
+        return s.length(); 
     }
 }
